@@ -1,20 +1,11 @@
-from nltk.corpus import wordnet
+from spacy_wordnet.wordnet_annotator import WordnetAnnotator
 
+def word_to_wordnet(word: str, nlp: WordnetAnnotator) -> set[str]:
+	token = nlp(word)[0]
+	return set([l.name() for l in token._.wordnet.lemmas()])
 
-def word_to_wn(word):
-	synsets = []
-
-	for syns in wordnet.synsets(word):
-		for l in syns.lemmas():
-			synsets.append(l.name())
-
-	return set(synsets)
-
-def similar(pred_syns, ref_syns):
-	if len(pred_syns.intersection(ref_syns))!=0:
+def similar(pred_syns: set[str], ref_syns: set[str]) -> bool:
+	if pred_syns.intersection(ref_syns):
 		return True
 	else:
 		return False
-
-def similar_to(pred_syns, ref_syns):
-	return pred_syns.intersection(ref_syns)
